@@ -104,12 +104,18 @@ export const AuthController = {
       const safeUser = UserRepository.findById(user.id);
       const profile = ProfileRepository.findByUserId(user.id);
 
-      res.json({
-        success: true,
-        message: 'Login successful.',
-        user: safeUser,
-        profile
-      });
+      req.session.save((err) => {
+  if (err) {
+    return next(err);
+  }
+
+  res.json({
+    success: true,
+    message: 'Login successful.',
+    user: safeUser,
+    profile
+  });
+});
     } catch (err) {
       next(err);
     }
