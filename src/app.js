@@ -22,18 +22,22 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Express Session Middleware
+
+ // Express Session Middleware
+app.set('trust proxy', 1);
+
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'change-this-to-a-random-secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
+    secure: true,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000
   }
 }));
+
 
 // Serve Static Frontend Files
 const publicPath = path.resolve(process.cwd(), 'public');
