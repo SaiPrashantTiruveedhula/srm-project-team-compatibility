@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SRMIST - Project Team Compatibility Platform</title>
+  <style>
+    /* ==========================================================================
+       1. CSS DESIGN SYSTEM & TOKENS
+       ========================================================================== */
+    :root {
+      --primary-color: #0d6efd;
+      --primary-hover: #0b5ed7;
+      --secondary-color: #6c757d;
+      --success-color: #198754;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #0dcaf0;
+
+      --srm-blue: #003876;
+      --srm-gold: #c59b27;
+
+      --bg-primary: #f8f9fa;
+      --bg-surface: #ffffff;
+      --bg-secondary: #e9ecef;
+      --border-color: #dee2e6;
+
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --text-muted: #8c98a4;
+
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --modal-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-full: 9999px;
+
+      --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --transition: all 0.2s ease-in-out;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-surface: #1e293b;
+      --bg-secondary: #334155;
+      --border-color: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a { color: var(--primary-color); text-decoration: none; transition: var(--transition); cursor: pointer; }
+    a:hover { color: var(--primary-hover); }
+
+    /* Navbar */
+    .navbar {
+      background-color: var(--srm-blue);
+      color: #ffffff;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #ffffff;
+    }
+    .navbar-brand span { color: var(--srm-gold); }
+
+    .navbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      color: #e2e8f0;
+      font-weight: 500;
+      padding: 0.4rem 0.75rem;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Container & Layout */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+      width: 100%;
+      flex: 1;
+    }
+
+    .view-section { display: none; }
+    .view-section.active-view { display: block; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .page-title { font-size: 1.75rem; font-weight: 700; }
+    .page-subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: var(--transition);
+      outline: none;
+    }
+    .btn-primary { background-color: var(--primary-color); color: #ffffff; }
+    .btn-primary:hover { background-color: var(--primary-hover); }
+    .btn-secondary { background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color); }
+    .btn-secondary:hover { background-color: var(--border-color); }
+    .btn-success { background-color: var(--success-color); color: #ffffff; }
+    .btn-danger { background-color: var(--danger-color); color: #ffffff; }
+    .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+    .btn-lg { padding: 0.75rem 1.5rem; font-size: 1rem; }
+
+    /* Cards & Badges */
+    .card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+    }
+    .card:hover { transform: translateY(-2px); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      background-color: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+    .badge-primary { background-color: rgba(13, 110, 253, 0.12); color: var(--primary-color); }
+    .badge-success { background-color: rgba(25, 135, 84, 0.12); color: var(--success-color); }
+    .badge-warning { background-color: rgba(255, 193, 7, 0.2); color: #856404; }
+    .badge-danger { background-color: rgba(220, 53, 69, 0.12); color: var(--danger-color); }
+
+    .compatibility-badge {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+    }
+    .compatibility-badge.medium { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .compatibility-badge.low { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+
+    .progress-bar-container {
+      background-color: var(--bg-secondary);
+      border-radius: var(--radius-full);
+      height: 8px;
+      width: 100%;
+      overflow: hidden;
+      margin: 0.4rem 0;
+    }
+    .progress-bar-fill { height: 100%; background-color: var(--primary-color); transition: width 0.4s ease; }
+
+    /* Forms & Controls */
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--text-primary); }
+    .form-control {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      background-color: var(--bg-surface);
+      color: var(--text-primary);
+      outline: none;
+      transition: var(--transition);
+    }
+    .form-control:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15); }
+
+    /* Grid Layouts */
+    .grid { display: grid; gap: 1.25rem; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color); }
+    .avatar-lg { width: 80px; height: 80px; }
+
+    /* Modals & Toast */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 2000; opacity: 0; visibility: hidden; transition: var(--transition);
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-card {
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem; max-width: 550px; width: 90%;
+      max-height: 90vh; overflow-y: auto; box-shadow: var(--modal-shadow);
+    }
+
+    #toast-container {
+      position: fixed; bottom: 1.5rem; right: 1.5rem;
+      display: flex; flex-direction: column; gap: 0.5rem; z-index: 3000;
+    }
+    .toast {
+      background-color: var(--bg-surface);
+      border-left: 4px solid var(--primary-color);
+      padding: 0.8rem 1.2rem; border-radius: var(--radius-md);
+      box-shadow: var(--modal-shadow); color: var(--text-primary);
+      font-size: 0.9rem; min-width: 260px; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .toast.toast-success { border-left-color: var(--success-color); }
+    .toast.toast-error { border-left-color: var(--danger-color); }
+
+    footer {
+      background-color: var(--bg-surface);
+      border-top: 1px solid var(--border-color);
+      padding: 1.5rem; text-align: center; color: var(--text-secondary);
+      font-size: 0.9rem; margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+      .navbar { flex-wrap: wrap; padding: 0.75rem 1rem; }
+      .navbar-nav { width: 100%; overflow-x: auto; padding-top: 0.5rem; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a onclick="navigateTo('hero')" class="navbar-brand">
+      🎓 SRMIST <span>Team Compatibility</span>
+    </a>
+    <ul class="navbar-nav">
+      <li><a onclick="navigateTo('discover')" class="nav-link">Discover Students</a></li>
+      <li><a onclick="navigateTo('projects')" class="nav-link">Projects</a></li>
+      <li><a onclick="navigateTo('matching')" class="nav-link">Match Engine</a></li>
+      <li id="nav-teams-link" style="display:none;"><a onclick="navigateTo('teams')" class="nav-link">My Teams</a></li>
+
+      <li id="nav-auth-links">
+        <a onclick="navigateTo('login')" class="btn btn-secondary btn-sm">Login</a>
+        <a onclick="navigateTo('register')" class="btn btn-primary btn-sm">Register</a>
+      </li>
+
+      <li id="nav-user-menu" style="display:none; align-items:center; gap:0.75rem;">
+        <a onclick="navigateTo('notifications')" class="nav-link" style="position:relative;">
+          🔔 Notifications
+          <span id="nav-notif-badge" class="badge badge-danger" style="display:none; position:absolute; top:-4px; right:-8px;">0</span>
+        </a>
+        <a onclick="navigateTo('dashboard')" class="nav-link">Dashboard</a>
+        <a onclick="navigateTo('profile')" class="nav-link" id="nav-user-name">Profile</a>
+        <button id="theme-toggle-btn" class="btn btn-secondary btn-sm">🌓</button>
+        <button id="logout-btn" class="btn btn-danger btn-sm">Logout</button>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container">
+
+    <!-- 1. HERO VIEW -->
+    <div id="view-hero" class="view-section active-view">
+      <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 3rem 1rem;">
+        <span class="badge badge-primary" style="font-size:0.9rem; padding:0.4rem 0.8rem; margin-bottom:1rem;">Official SRMIST Student Collaboration Platform</span>
+        <h1 style="font-size: 2.75rem; max-width: 800px; margin-bottom: 1rem;">
+          Discover Compatible Teammates for Hackathons, Research & Startups
+        </h1>
+        <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 650px; margin-bottom: 2rem;">
+          Match based on actual programming skills, proficiency, availability, academic branch, and complementary project experience.
+        </p>
+
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+          <a onclick="navigateTo('register')" class="btn btn-primary btn-lg">Get Started with SRM Email</a>
+          <a onclick="navigateTo('projects')" class="btn btn-secondary btn-lg">Browse Projects</a>
+        </div>
+
+        <div class="grid grid-3" style="margin-top: 3.5rem; width: 100%;">
+          <div class="card">
+            <h3>⚡ Compatibility Engine</h3>
+            <p style="font-size:0.9rem; color:var(--text-secondary);">Transparent 0-100% scores calculated from required skills, complementary proficiencies, and availability.</p>
+          </div>
+          <div class="card">
+            <h3>🤖 Team Generator</h3>
+            <p style="font-size:0.9rem; color:var(--text-secondary);">Automated composition of balanced 3–5 member teams covering frontend, backend, AI/ML, and design roles.</p>
+          </div>
+          <div class="card">
+            <h3>📊 Skill Gap Analysis</h3>
+            <p style="font-size:0.9rem; color:var(--text-secondary);">Analyze real-time team skill coverage and discover candidate profiles to recruit for missing roles.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. LOGIN VIEW -->
+    <div id="view-login" class="view-section">
+      <div style="max-width: 450px; margin: 2rem auto;">
+        <div class="card">
+          <h2 style="text-align:center; margin-bottom:0.25rem;">Student Login</h2>
+          <p style="text-align:center; color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.5rem;">Access your SRMIST project dashboard</p>
+
+          <form id="form-login">
+            <div class="form-group">
+              <label class="form-label">SRM Email Address</label>
+              <input type="email" id="login-email" class="form-control" placeholder="netid@srmist.edu.in" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:1rem;">Login</button>
+          </form>
+
+          <div style="margin-top:1.25rem; font-size:0.85rem; background:var(--bg-secondary); padding:0.75rem; border-radius:var(--radius-md);">
+            <strong>Demo Student Account:</strong><br>
+            Email: <code>aarav.sharma@srmist.edu.in</code><br>
+            Password: <code>Password123!</code>
+          </div>
+          <p style="text-align:center; font-size:0.85rem; margin-top:1.25rem; color:var(--text-secondary);">
+            Don't have an account? <a onclick="navigateTo('register')">Register here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. REGISTER VIEW -->
+    <div id="view-register" class="view-section">
+      <div style="max-width: 500px; margin: 2rem auto;">
+        <div class="card">
+          <h2 style="text-align:center; margin-bottom:0.25rem;">Create Account</h2>
+          <p style="text-align:center; color:var(--text-secondary); font-size:0.9rem; margin-bottom:1.25rem;">Must use official @srmist.edu.in email address</p>
+
+          <form id="form-register">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="reg-name" class="form-control" placeholder="Aarav Sharma" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">SRM Email Address</label>
+              <input type="email" id="reg-email" class="form-control" placeholder="ab1234@srmist.edu.in" required>
+              <span style="font-size:0.75rem; color:var(--text-muted);">Strictly validated for @srmist.edu.in domain</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" id="reg-password" class="form-control" placeholder="At least 8 characters" required minlength="8">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm Password</label>
+              <input type="password" id="reg-confirm-password" class="form-control" placeholder="Re-enter password" required minlength="8">
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg" style="width:100%; margin-top:1rem;">Register Account</button>
+          </form>
+          <p style="text-align:center; font-size:0.85rem; margin-top:1.25rem; color:var(--text-secondary);">
+            Already registered? <a onclick="navigateTo('login')">Login here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. DASHBOARD VIEW -->
+    <div id="view-dashboard" class="view-section">
+      <div class="page-header">
+        <div>
+          <h1 id="dash-welcome-name" class="page-title">Welcome back!</h1>
+          <p class="page-subtitle">SRMIST Project & Teammate Compatibility Hub</p>
+        </div>
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <button onclick="navigateTo('create-project')" class="btn btn-primary">+ Create Project</button>
+          <button onclick="navigateTo('discover')" class="btn btn-secondary">Find Teammates</button>
+          <button onclick="navigateTo('matching')" class="btn btn-success">Generate Team</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem; background: linear-gradient(135deg, rgba(13,110,253,0.05) 0%, rgba(0,56,118,0.08) 100%);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+          <span style="font-weight:600; font-size:0.95rem;">Profile Completion Level</span>
+          <span id="dash-profile-pct" style="font-weight:700; color:var(--primary-color);">0%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="dash-profile-bar-fill" class="progress-bar-fill" style="width:0%;"></div>
+        </div>
+        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.4rem;">
+          Complete your profile skills and project interests to boost compatibility scores.
+          <a onclick="navigateTo('profile')">Edit Profile →</a>
+        </p>
+      </div>
+
+      <div class="grid grid-2" style="margin-bottom:1.5rem;">
+        <div>
+          <h3>My Active Teams</h3>
+          <div id="dash-active-teams" style="margin-top:0.5rem;"><p class="text-muted">Loading teams...</p></div>
+        </div>
+        <div>
+          <h3>My Pending Applications</h3>
+          <div id="dash-pending-apps" style="margin-top:0.5rem;"><p class="text-muted">Loading applications...</p></div>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <h3>Recommended Teammates</h3>
+            <a onclick="navigateTo('discover')" style="font-size:0.85rem;">View All →</a>
+          </div>
+          <div id="dash-rec-teammates"><p class="text-muted">Loading profiles...</p></div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <h3>Featured Projects</h3>
+            <a onclick="navigateTo('projects')" style="font-size:0.85rem;">View All →</a>
+          </div>
+          <div id="dash-rec-projects"><p class="text-muted">Loading projects...</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. DISCOVER STUDENTS VIEW -->
+    <div id="view-discover" class="view-section">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Discover Students</h1>
+          <p class="page-subtitle">Search compatible teammates across all SRMIST departments and academic years</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem;">
+        <form id="form-discover-filter" class="grid grid-4" style="align-items:end;">
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Student Name</label>
+            <input type="text" id="disc-name" class="form-control" placeholder="Search name...">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Technical Skill</label>
+            <input type="text" id="disc-skill" class="form-control" placeholder="Python, React, PyTorch">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Department / Branch</label>
+            <select id="disc-branch" class="form-control">
+              <option value="">All Branches</option>
+              <option value="Computer Science and Engineering">Computer Science & Eng</option>
+              <option value="Artificial Intelligence and Machine Learning">AI & Machine Learning</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Cyber Security">Cyber Security</option>
+              <option value="Information Technology">Information Technology</option>
+              <option value="Mechatronics">Mechatronics</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Academic Year</label>
+            <select id="disc-year" class="form-control">
+              <option value="">All Years</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+          </div>
+          <div style="grid-column: 1/-1; display:flex; justify-content:flex-end; margin-top:0.5rem;">
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="students-grid" class="grid grid-3"><p class="text-muted">Loading students...</p></div>
+    </div>
+
+    <!-- 6. PROJECTS DISCOVERY VIEW -->
+    <div id="view-projects" class="view-section">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Project Discovery</h1>
+          <p class="page-subtitle">Browse student hackathon ideas, research initiatives, and campus startups</p>
+        </div>
+        <button onclick="navigateTo('create-project')" class="btn btn-primary">+ Publish Project</button>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem;">
+        <form id="form-project-search" class="grid grid-3" style="align-items:end;">
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Search Keyword</label>
+            <input type="text" id="proj-search-query" class="form-control" placeholder="Title, description...">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Category</label>
+            <select id="proj-search-cat" class="form-control">
+              <option value="">All Categories</option>
+              <option value="Hackathon">Hackathon</option>
+              <option value="Research">Research</option>
+              <option value="Startup">Startup</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Artificial Intelligence / Machine Learning">AI / Machine Learning</option>
+              <option value="Hardware / IoT">Hardware / IoT</option>
+            </select>
+          </div>
+          <div style="margin:0;">
+            <button type="submit" class="btn btn-primary" style="width:100%;">Search Projects</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="projects-grid" class="grid grid-3"><p class="text-muted">Loading projects...</p></div>
+    </div>
+
+    <!-- 7. CREATE PROJECT VIEW -->
+    <div id="view-create-project" class="view-section">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Publish New Project</h1>
+            <p class="page-subtitle">Specify required technical skills, roles, and project goals</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <form id="form-create-project">
+            <div class="form-group">
+              <label class="form-label">Project Title *</label>
+              <input type="text" id="cp-title" class="form-control" placeholder="e.g. SRM Smart Campus AI Assistant" required>
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label class="form-label">Category *</label>
+                <select id="cp-category" class="form-control" required>
+                  <option value="Hackathon">Hackathon</option>
+                  <option value="Academic Project">Academic Project</option>
+                  <option value="Research">Research</option>
+                  <option value="Startup">Startup</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="Artificial Intelligence / Machine Learning">AI / Machine Learning</option>
+                  <option value="Hardware / IoT">Hardware / IoT</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Desired Team Size *</label>
+                <input type="number" id="cp-teamsize" class="form-control" value="4" min="2" max="10" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description *</label>
+              <textarea id="cp-description" class="form-control" rows="3" required></textarea>
+            </div>
+            <div class="grid grid-2">
+              <div class="form-group">
+                <label class="form-label">Required Skills (Comma separated) *</label>
+                <input type="text" id="cp-req-skills" class="form-control" placeholder="Node.js, Python, ML" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Roles Needed (Comma separated) *</label>
+                <input type="text" id="cp-roles" class="form-control" placeholder="Backend Lead, UI Designer" required>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1.5rem;">
+              <button type="button" onclick="navigateTo('projects')" class="btn btn-secondary">Cancel</button>
+              <button type="submit" class="btn btn-primary btn-lg">Publish Project</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. MATCHING ENGINE & TEAM GENERATOR VIEW -->
+    <div id="view-matching" class="view-section">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Teammate Compatibility Engine</h1>
+          <p class="page-subtitle">Algorithmic score matching & dynamic team composition generator</p>
+        </div>
+        <button id="btn-generate-team" class="btn btn-success btn-lg">⚡ Generate My Team</button>
+      </div>
+
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label" style="font-size:1rem;">Select Target Project</label>
+          <select id="match-project-select" class="form-control" style="font-size:1rem; padding:0.75rem;"></select>
+        </div>
+      </div>
+
+      <div id="team-combinations-container" style="margin-bottom:2rem;"></div>
+
+      <h3 style="margin-bottom:1rem;">Ranked Candidate Recommendations</h3>
+      <div id="recommendations-grid" class="grid grid-2"><p class="text-muted">Loading scores...</p></div>
+    </div>
+
+    <!-- 9. MY TEAMS VIEW -->
+    <div id="view-teams" class="view-section">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Team Management</h1>
+          <p class="page-subtitle">Active project teams, members, and pending invitations</p>
+        </div>
+      </div>
+
+      <div style="margin-bottom:2rem;">
+        <h3>Pending Team Invitations</h3>
+        <div id="my-invitations-container" style="margin-top:0.75rem;"><p class="text-muted">Loading invitations...</p></div>
+      </div>
+
+      <div>
+        <h3>My Active Teams</h3>
+        <div id="my-teams-container" style="margin-top:0.75rem;"><p class="text-muted">Loading teams...</p></div>
+      </div>
+    </div>
+
+    <!-- 10. PROFILE VIEW -->
+    <div id="view-profile" class="view-section">
+      <div id="profile-view-container"><p class="text-muted">Loading profile...</p></div>
+    </div>
+
+    <!-- 11. NOTIFICATIONS VIEW -->
+    <div id="view-notifications" class="view-section">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Notifications</h1>
+            <p class="page-subtitle">Activity alerts for team invitations and applications</p>
+          </div>
+          <button id="btn-mark-all-read" class="btn btn-secondary btn-sm">Mark All Read</button>
+        </div>
+        <div id="notifications-list-container"><p class="text-muted">Loading notifications...</p></div>
+      </div>
+    </div>
+
+  </div> <!-- /container -->
+
+  <!-- EDIT PROFILE MODAL -->
+  <div id="modal-edit-profile" class="modal-overlay">
+    <div class="modal-card">
+      <h3>Edit Profile</h3>
+      <form id="form-edit-profile" style="margin-top:1rem;">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="ep-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Biography</label>
+          <textarea id="ep-bio" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">Branch</label>
+            <select id="ep-branch" class="form-control">
+              <option value="Computer Science and Engineering">Computer Science & Eng</option>
+              <option value="Artificial Intelligence and Machine Learning">AI & Machine Learning</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Cyber Security">Cyber Security</option>
+              <option value="Information Technology">Information Technology</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Academic Year</label>
+            <select id="ep-year" class="form-control">
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Skills (Format: Skill:Proficiency, e.g. Python:Advanced, Node.js:Intermediate)</label>
+          <input type="text" id="ep-skills" class="form-control">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem;">
+          <button type="button" onclick="closeModal('modal-edit-profile')" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Profile</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 SRM Institute of Science and Technology. All rights reserved.</p>
+  </footer>
+
+  <!-- ==========================================================================
+       2. CONSOLIDATED FRONTEND JAVASCRIPT CLIENT
+       ========================================================================== -->
+  <script type="module">
+    const API_BASE = '/api';
+
+    // API FETCH HELPER
+    async function apiRequest(endpoint, options = {}) {
+      const config = {
+        headers: { 'Content-Type': 'application/json', ...options.headers },
+        ...options
+      };
+      if (config.body && typeof config.body === 'object') {
+        config.body = JSON.stringify(config.body);
+      }
+      try {
+        const res = await fetch(`${API_BASE}${endpoint}`, config);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `HTTP Error ${res.status}`);
+        return data;
+      } catch (err) {
+        showToast(err.message, 'error');
+        throw err;
+      }
+    }
+
+    // TOAST NOTIFIER
+    window.showToast = function(message, type = 'info') {
+      let container = document.getElementById('toast-container');
+      if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+      }
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `<span>${message}</span><button style="background:none;border:none;cursor:pointer;color:inherit;" onclick="this.parentElement.remove()">✕</button>`;
+      container.appendChild(toast);
+      setTimeout(() => { if (toast.parentElement) toast.remove(); }, 4000);
+    };
+
+    // VIEW ROUTER
+    window.navigateTo = async function(viewId) {
+      document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active-view'));
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) target.classList.add('active-view');
+      window.scrollTo(0, 0);
+
+      // Trigger view data loaders
+      if (viewId === 'dashboard') loadDashboardData();
+      if (viewId === 'discover') loadDiscoverStudents();
+      if (viewId === 'projects') loadProjects();
+      if (viewId === 'matching') loadMatchingData();
+      if (viewId === 'teams') loadTeamsData();
+      if (viewId === 'profile') loadProfileData();
+      if (viewId === 'notifications') loadNotificationsData();
+    };
+
+    window.closeModal = function(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('active');
+    };
+
+    // AUTH STATE MANAGER
+    async function checkAuthState() {
+      try {
+        const data = await apiRequest('/auth/me');
+        if (data.success && data.user) {
+          document.getElementById('nav-auth-links').style.display = 'none';
+          document.getElementById('nav-user-menu').style.display = 'flex';
+          document.getElementById('nav-teams-link').style.display = 'block';
+          document.getElementById('nav-user-name').textContent = data.user.full_name;
+
+          const notif = await apiRequest('/notifications').catch(() => null);
+          if (notif && notif.unreadCount > 0) {
+            const badge = document.getElementById('nav-notif-badge');
+            badge.textContent = notif.unreadCount;
+            badge.style.display = 'inline-flex';
+          }
+          return data.user;
+        }
+      } catch (err) {}
+      document.getElementById('nav-auth-links').style.display = 'flex';
+      document.getElementById('nav-user-menu').style.display = 'none';
+      return null;
+    }
+
+    // 1. AUTH FORM HANDLERS
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const res = await apiRequest('/auth/login', {
+          method: 'POST',
+          body: {
+            email: document.getElementById('login-email').value,
+            password: document.getElementById('login-password').value
+          }
+        });
+        if (res.success) {
+          showToast('Login successful!', 'success');
+          await checkAuthState();
+          navigateTo('dashboard');
+        }
+      } catch (err) {}
+    });
+
+    document.getElementById('form-register').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('reg-email').value;
+      if (!email.endsWith('@srmist.edu.in')) {
+        showToast('Registration restricted strictly to @srmist.edu.in email addresses.', 'error');
+        return;
+      }
+      try {
+        const res = await apiRequest('/auth/register', {
+          method: 'POST',
+          body: {
+            fullName: document.getElementById('reg-name').value,
+            email,
+            password: document.getElementById('reg-password').value,
+            confirmPassword: document.getElementById('reg-confirm-password').value
+          }
+        });
+        if (res.success) {
+          showToast(res.message, 'success');
+          await checkAuthState();
+          navigateTo('dashboard');
+        }
+      } catch (err) {}
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await apiRequest('/auth/logout', { method: 'POST' }).catch(() => {});
+      await checkAuthState();
+      navigateTo('hero');
+    });
+
+    // 2. DASHBOARD LOADER
+    async function loadDashboardData() {
+      const auth = await checkAuthState();
+      if (!auth) { navigateTo('login'); return; }
+      document.getElementById('dash-welcome-name').textContent = `Welcome back, ${auth.full_name}!`;
+
+      const me = await apiRequest('/profile/me').catch(() => null);
+      if (me && me.profile) {
+        let score = 40;
+        if (me.profile.skills && me.profile.skills.length > 0) score += 30;
+        if (me.profile.bio) score += 30;
+        document.getElementById('dash-profile-pct').textContent = `${score}%`;
+        document.getElementById('dash-profile-bar-fill').style.width = `${score}%`;
+      }
+
+      const students = await apiRequest('/students').catch(() => ({ students: [] }));
+      const recDiv = document.getElementById('dash-rec-teammates');
+      recDiv.innerHTML = students.students.slice(0, 3).map(s => `
+        <div class="card" style="margin-bottom:0.5rem;">
+          <h4 style="margin:0;">${s.full_name}</h4>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">${s.branch} (${s.academic_year})</p>
+        </div>
+      `).join('');
+
+      const projs = await apiRequest('/projects').catch(() => ({ projects: [] }));
+      document.getElementById('dash-rec-projects').innerHTML = projs.projects.slice(0, 3).map(p => `
+        <div class="card" style="margin-bottom:0.5rem;">
+          <h4 style="margin:0;">${p.title}</h4>
+          <span class="badge badge-warning">${p.category}</span>
+        </div>
+      `).join('');
+    }
+
+    // 3. DISCOVER STUDENTS LOADER
+    async function loadDiscoverStudents() {
+      const grid = document.getElementById('students-grid');
+      const res = await apiRequest('/students').catch(() => ({ students: [] }));
+      if (res.students) {
+        grid.innerHTML = res.students.map(s => `
+          <div class="card">
+            <div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.5rem;">
+              <img src="${s.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'}" class="avatar">
+              <div>
+                <h4 style="margin:0;">${s.full_name}</h4>
+                <p style="font-size:0.8rem; color:var(--text-secondary);">${s.branch} • ${s.academic_year}</p>
+              </div>
+            </div>
+            <p style="font-size:0.85rem; margin-bottom:0.5rem;">${s.bio || 'No bio written.'}</p>
+            <div style="display:flex; gap:0.25rem; flex-wrap:wrap;">
+              ${s.skills.map(sk => `<span class="badge badge-primary">${sk.name}</span>`).join('')}
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // 4. PROJECTS LOADER
+    async function loadProjects() {
+      const grid = document.getElementById('projects-grid');
+      const res = await apiRequest('/projects').catch(() => ({ projects: [] }));
+      if (res.projects) {
+        grid.innerHTML = res.projects.map(p => `
+          <div class="card">
+            <span class="badge badge-warning" style="margin-bottom:0.4rem;">${p.category}</span>
+            <h3 style="margin-bottom:0.4rem;">${p.title}</h3>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.75rem;">${p.description}</p>
+            <div style="display:flex; gap:0.25rem; flex-wrap:wrap;">
+              ${p.required_skills.map(s => `<span class="badge badge-primary">${s.name}</span>`).join('')}
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // 5. MATCHING ENGINE & TEAM GENERATOR LOADER
+    async function loadMatchingData() {
+      const select = document.getElementById('match-project-select');
+      const projs = await apiRequest('/projects').catch(() => ({ projects: [] }));
+      if (projs.projects.length > 0) {
+        select.innerHTML = projs.projects.map(p => `<option value="${p.id}">${p.title} (${p.category})</option>`).join('');
+        loadRecommendations(select.value);
+      }
+      select.onchange = (e) => loadRecommendations(e.target.value);
+    }
+
+    async function loadRecommendations(projectId) {
+      const grid = document.getElementById('recommendations-grid');
+      grid.innerHTML = '<p class="text-muted">Calculating compatibility scores...</p>';
+      const res = await apiRequest('/matching/recommendations', {
+        method: 'POST',
+        body: { projectId: parseInt(projectId, 10) }
+      }).catch(() => null);
+
+      if (res && res.recommendations) {
+        grid.innerHTML = res.recommendations.map(r => `
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+              <h4>${r.student.full_name}</h4>
+              <div class="compatibility-badge">${r.match.compatibilityPercentage}%</div>
+            </div>
+            <p style="font-size:0.85rem; font-style:italic; background:var(--bg-secondary); padding:0.5rem; border-radius:var(--radius-md);">
+              "${r.match.explanation}"
+            </p>
+          </div>
+        `).join('');
+      }
+    }
+
+    document.getElementById('btn-generate-team').addEventListener('click', async () => {
+      const projectId = document.getElementById('match-project-select').value;
+      const container = document.getElementById('team-combinations-container');
+      container.innerHTML = '<p class="text-muted">Generating optimal team combinations...</p>';
+
+      const res = await apiRequest('/matching/generate-team', {
+        method: 'POST',
+        body: { projectId: parseInt(projectId, 10) }
+      }).catch(() => null);
+
+      if (res && res.data && res.data.combinations) {
+        container.innerHTML = `
+          <h3>Generated Team Options for "${res.data.projectTitle}"</h3>
+          <div class="grid grid-3" style="margin-top:0.75rem;">
+            ${res.data.combinations.map(c => `
+              <div class="card" style="border:2px solid var(--primary-color);">
+                <h4>Option ${c.combinationId} (Score: ${c.overallTeamScore}%)</h4>
+                <p style="font-size:0.8rem; color:var(--text-secondary);">Skill Coverage: ${c.skillCoveragePct}%</p>
+                <ul style="font-size:0.85rem; margin-top:0.5rem;">
+                  ${c.members.map(m => `<li>${m.fullName} (${m.compatibilityPercentage}%)</li>`).join('')}
+                </ul>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    });
+
+    // 6. TEAMS LOADER
+    async function loadTeamsData() {
+      const invContainer = document.getElementById('my-invitations-container');
+      const teamsContainer = document.getElementById('my-teams-container');
+      const teams = await apiRequest('/teams/me').catch(() => ({ teams: [] }));
+      const invs = await apiRequest('/teams/invitations').catch(() => ({ invitations: [] }));
+
+      invContainer.innerHTML = invs.invitations.length === 0 ? '<p class="text-muted">No pending invitations.</p>' : invs.invitations.map(i => `
+        <div class="card" style="margin-bottom:0.5rem;">
+          <h4>Invitation to join team for "${i.project_title}"</h4>
+          <p style="font-size:0.85rem;">Role offered: ${i.offered_role}</p>
+        </div>
+      `).join('');
+
+      teamsContainer.innerHTML = teams.teams.length === 0 ? '<p class="text-muted">You are not in any teams yet.</p>' : teams.teams.map(t => `
+        <div class="card" style="margin-bottom:0.75rem;">
+          <h3>${t.name}</h3>
+          <p style="font-size:0.85rem; color:var(--text-secondary);">Project: ${t.project_title}</p>
+        </div>
+      `).join('');
+    }
+
+    // 7. PROFILE LOADER
+    async function loadProfileData() {
+      const container = document.getElementById('profile-view-container');
+      const res = await apiRequest('/profile/me').catch(() => null);
+      if (res && res.profile) {
+        const p = res.profile;
+        container.innerHTML = `
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h2>${p.full_name}</h2>
+                <p class="page-subtitle">${p.branch} • ${p.academic_year}</p>
+              </div>
+              <button onclick="document.getElementById('modal-edit-profile').classList.add('active')" class="btn btn-primary">Edit Profile</button>
+            </div>
+            <hr style="margin:1rem 0; border:none; border-top:1px solid var(--border-color);">
+            <p>${p.bio || 'No bio provided.'}</p>
+          </div>
+        `;
+      }
+    }
+
+    // 8. NOTIFICATIONS LOADER
+    async function loadNotificationsData() {
+      const container = document.getElementById('notifications-list-container');
+      const res = await apiRequest('/notifications').catch(() => ({ notifications: [] }));
+      container.innerHTML = res.notifications.length === 0 ? '<p class="text-muted">No notifications.</p>' : res.notifications.map(n => `
+        <div class="card" style="margin-bottom:0.5rem;">
+          <h4>${n.title}</h4>
+          <p style="font-size:0.85rem;">${n.message}</p>
+        </div>
+      `).join('');
+    }
+
+    // INITIALIZATION ON DOM READY
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Theme Toggle
+      document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+      });
+
+      await checkAuthState();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "project-team-compatibility",
+  "version": "1.0.0",
+  "description": "Student project collaboration platform for SRM Institute of Science and Technology (SRMIST)",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "db:init": "node database/initialize.js",
+    "db:seed": "node database/seed.js",
+    "db:reset": "node database/initialize.js --reset && node database/seed.js",
+    "test": "node --test tests/api.test.js"
+  },
+  "keywords": [
+    "srmist",
+    "team-compatibility",
+    "project-matching",
+    "sqlite",
+    "express"
+  ],
+  "author": "Antigravity",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  }
+}
